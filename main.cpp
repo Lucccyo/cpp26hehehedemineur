@@ -3,13 +3,13 @@
 #include <cassert>
 #include <vector>
 
-class Cell {
+struct Cell {
   public:
     int num;
     bool is_safe;
 };
 
-class Map {
+struct Map {
   public:
     int width;
     int height;
