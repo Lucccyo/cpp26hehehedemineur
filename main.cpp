@@ -50,14 +50,26 @@ int get_random_up_bounded(int upper_bound) {
 void bombard_cell(Map& m, int ri, int rj) {
   m.content[ri][rj].is_safe = false;
   m.content[ri][rj].num = -1;
-  if (ri > 0 && rj > 0)                  {m.content[ri-1][rj-1].num++;}
-  if (ri > 0)                            {m.content[ri-1][rj].num++;}
-  if (ri > 0 && rj + 1 < m.width)        {m.content[ri-1][rj+1].num++;}
-  if (rj > 0)                            {m.content[ri][rj-1].num++;}
-  if (rj + 1 < m.width)                  {m.content[ri][rj+1].num++;}
-  if (ri + 1 < m.height && rj > 0)       {m.content[ri+1][rj-1].num++;}
-  if (ri + 1 < m.height)                 {m.content[ri+1][rj].num++;}
-  if (ri + 1 < m.height && rj + 1 < m.width) {m.content[ri+1][rj+1].num++;}
+  const int north_line = ri - 1;
+  const int south_line = ri + 1;
+  const int west_col   = rj - 1;
+  const int east_col   = rj + 1;
+  if (ri > 0 && rj > 0 && m.content[north_line][west_col].is_safe)
+    {m.content[north_line][west_col].num++;}
+  if (ri > 0 && m.content[north_line][rj].is_safe)
+    {m.content[north_line][rj].num++;}
+  if (ri > 0 && rj + 1 < m.width && m.content[north_line][east_col].is_safe)
+    {m.content[north_line][east_col].num++;}
+  if (rj > 0 && m.content[ri][west_col].is_safe)
+    {m.content[ri][west_col].num++;}
+  if (rj + 1 < m.width && m.content[ri][east_col].is_safe)
+    {m.content[ri][east_col].num++;}
+  if (ri + 1 < m.height && rj > 0 && m.content[south_line][west_col].is_safe)
+    {m.content[south_line][west_col].num++;}
+  if (ri + 1 < m.height && m.content[south_line][rj].is_safe)
+    {m.content[south_line][rj].num++;}
+  if (ri + 1 < m.height && rj + 1 < m.width && m.content[south_line][east_col].is_safe)
+    {m.content[south_line][east_col].num++;}
 }
 
 void bombard_map(Map& m, int bomb_count)
