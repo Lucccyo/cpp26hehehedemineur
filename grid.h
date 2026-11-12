@@ -4,9 +4,12 @@
 
 template<typename T>
 struct Grid {
-  std::size_t width;
-  std::size_t height;
+  private:
   std::vector<T> content;
+  
+  public:
+  const std::size_t width;
+  const std::size_t height;
 
   Grid (std::size_t width, std::size_t height, T const& init = T{}):
     width{width}, height{height}, content{std::vector(width * height, init)} {} 
@@ -55,6 +58,18 @@ struct Grid {
   T* south_east(std::size_t i, std::size_t j) {
     if (!in_grid(i+1, j+1)) return nullptr;
     return &this->operator()(i+1, j+1);
+  }
+
+  template <typename Pred>
+  bool exists(Pred pred) const {
+    return std::any_of(content.begin(), content.end(), pred);
+  }
+
+  template <typename Pred>
+  T const* find_if(Pred pred) const {
+    auto it = std::find_if(content.begin(), content.end(), pred);
+    if (it == content.end()) return nullptr;
+    return &*it;
   }
 
   template <typename F>

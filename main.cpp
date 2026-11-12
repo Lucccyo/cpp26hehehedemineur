@@ -9,9 +9,12 @@ namespace GridCell {
     bool is_safe;
   };
 
+  bool grid_safe (Grid<Cell> grid_cell) {
+    return !grid_cell.exists([](Cell const &c) { return !c.is_safe; });
+  }
+
   Grid<Cell> init(std::size_t width, std::size_t height)
-    // pre(width  > 0 && height > 0)
-    // post(map: grid_safe map)
+    post(grid: grid_safe(grid))
   {
     Cell c0;
     c0.num = 0;
@@ -44,8 +47,11 @@ namespace GridCell {
       { grid_cell.south_east(ri, rj)->num++; }
   }
 
-  void bombard(Grid<Cell>& grid_cell, size_t bomb_count)
-    // pre(bomb_count >= 0 && bomb_count <= m.width * m.height)
+  void bombard(Grid<Cell>& grid_cell, const size_t bomb_count)
+    pre(bomb_count >= 0 && bomb_count <= grid_cell.width * grid_cell.height)
+    post(
+      (bomb_count >  0) && !grid_safe(grid_cell) ||
+      (bomb_count == 0) &&  grid_safe(grid_cell))
   {
     for (int bc = bomb_count - 1; bc >= 0; --bc) {
       int ri = get_random_up_bounded(grid_cell.height - 1);
@@ -64,9 +70,7 @@ namespace GridCell {
   }
 }
 
-void say(const std::string& s)
-  // pre(s.length() > 4)
-{ std::print("{}\n\n", s); }
+void say(const std::string& s) { std::print("{}\n\n", s); }
 
 int main(){
   int seed = time(0);
